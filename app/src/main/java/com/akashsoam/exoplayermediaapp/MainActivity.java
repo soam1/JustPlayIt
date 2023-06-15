@@ -23,7 +23,7 @@ public class MainActivity extends AppCompatActivity {
 
 //    private Player.EventListener mEventListener;
 
-//    private String music_url = "https://opengameart.org/sites/default/files/the_field_of_dreams.mp3";
+    //    private String music_url = "https://opengameart.org/sites/default/files/the_field_of_dreams.mp3";
     String music_list[] = new String[]{
             "https://pagalworlds.co/wp-content/uploads/Harry-Potter-Theme.mp3",
             "https://opengameart.org/sites/default/files/the_field_of_dreams.mp3",
@@ -41,7 +41,7 @@ public class MainActivity extends AppCompatActivity {
         mPlayerView = findViewById(R.id.my_player_view);
         mProgressBar = findViewById(R.id.my_progress_bar);
 
-        mSimpleExoPlayer = new SimpleExoPlayer.Builder(this).build();
+        mSimpleExoPlayer = new SimpleExoPlayer.Builder(this).setSeekBackIncrementMs(10000).setSeekForwardIncrementMs(10000).build();
         mPlayerView.setPlayer(mSimpleExoPlayer);
 
 
@@ -59,9 +59,9 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onPlaybackStateChanged(int playbackState) {
                 Player.Listener.super.onPlaybackStateChanged(playbackState);
-                if(playbackState ==Player.STATE_BUFFERING){
+                if (playbackState == Player.STATE_BUFFERING) {
                     mProgressBar.setVisibility(View.VISIBLE);
-                }else if(playbackState ==Player.STATE_READY){
+                } else if (playbackState == Player.STATE_READY) {
                     mProgressBar.setVisibility(View.GONE);
                 }
             }
