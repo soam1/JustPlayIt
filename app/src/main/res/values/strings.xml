@@ -1,4 +1,5 @@
 <resources>
     <string name="app_name">ExoplayerMediaApp</string>
     <string name="download_btn">download btn</string>
+    <string name="todo">TODO</string>
 </resources>
