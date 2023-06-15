@@ -2,24 +2,33 @@ package com.akashsoam.exoplayermediaapp;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.Manifest;
+import android.app.DownloadManager;
+import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.view.View;
 import android.widget.ProgressBar;
-import android.widget.SimpleAdapter;
-import android.widget.SimpleExpandableListAdapter;
 
 import com.google.android.exoplayer2.MediaItem;
 import com.google.android.exoplayer2.Player;
 import com.google.android.exoplayer2.SimpleExoPlayer;
 import com.google.android.exoplayer2.ui.PlayerView;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.karumi.dexter.Dexter;
+import com.karumi.dexter.MultiplePermissionsReport;
+import com.karumi.dexter.PermissionToken;
+import com.karumi.dexter.listener.PermissionRequest;
+import com.karumi.dexter.listener.multi.MultiplePermissionsListener;
 
-import java.util.Arrays;
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
     private PlayerView mPlayerView;
     private SimpleExoPlayer mSimpleExoPlayer;
     private ProgressBar mProgressBar;
+    private FloatingActionButton mFloatingActionButton;
 
 //    private Player.EventListener mEventListener;
 
@@ -66,6 +75,13 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
+
+        mFloatingActionButton = findViewById(R.id.fab);
+        mFloatingActionButton.setOnClickListener(v -> {
+            setupPermissions();
+
+        });
+
     }
 
     @Override
@@ -75,5 +91,42 @@ public class MainActivity extends AppCompatActivity {
             mSimpleExoPlayer.release();
             mSimpleExoPlayer = null;
         }
+    }
+
+    private void setupPermissions() {
+        Dexter.withContext(this)
+                .withPermissions(
+                        Manifest.permission.READ_EXTERNAL_STORAGE,
+                        Manifest.permission.WRITE_EXTERNAL_STORAGE
+                ).withListener(new MultiplePermissionsListener() {
+                    @Override
+                    public void onPermissionsChecked(MultiplePermissionsReport report) {
+                        if (report.areAllPermissionsGranted()) {
+                            downloadTheCurrentMusic(mSimpleExoPlayer.getCurrentMediaItem().playbackProperties.uri.toString());
+
+                        }
+                    }
+                    //download the current music
+
+
+                    @Override
+                    public void onPermissionRationaleShouldBeShown(List<PermissionRequest> permissions, PermissionToken token) {
+                        token.continuePermissionRequest();
+                    }
+                }).check();
+    }
+
+    private void downloadTheCurrentMusic(String musicURLString) {
+        DownloadManager downloadManager = (DownloadManager) getSystemService(Context.DOWNLOAD_SERVICE);
+        Uri uri = Uri.parse(musicURLString);
+        DownloadManager.Request request = new DownloadManager.Request(uri);
+//        String musicName = musicURLString.substring(musicURLString.lastIndexOf("/" + 1));
+        String musicName = musicURLString;
+        request.setTitle(musicName);
+        request.setVisibleInDownloadsUi(true);
+        request.allowScanningByMediaScanner();
+        request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE);
+        request.setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, uri.getLastPathSegment());
+        downloadManager.enqueue(request);
     }
 }

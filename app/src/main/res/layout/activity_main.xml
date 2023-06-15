@@ -8,9 +8,9 @@
 
     <com.google.android.exoplayer2.ui.PlayerView
         android:id="@+id/my_player_view"
-        app:use_controller="true"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"
+        app:use_controller="true" />
 
     <!--        app:controller_layout_id="@layout/my_controller"-->
 
@@ -21,4 +21,14 @@
         android:layout_centerInParent="true"
         android:visibility="gone" />
 
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fab"
+        android:layout_width="wrap_content"
+        android:contentDescription="@string/download_btn"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_centerInParent="true"
+        android:layout_marginTop="50dp"
+        android:src="@drawable/download_arrow"
+        app:backgroundTint="#FFEB3B" />
 </RelativeLayout>
